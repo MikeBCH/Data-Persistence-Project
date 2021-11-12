@@ -18,27 +18,54 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         DataManager.instance.Load();
-
+        UpdateScores();
 
     }
 
     // Update is called once per frame
     void LateUpdate()
     {
+
+    }
+
+    void UpdateScores()
+    {
         if (DataManager.dataLoaded)
         {
-            if (DataManager.playerNames[0] != null)
+            if (DataManager.playerNames != null)
             {
-                highScoreOne.text = "#1 " + DataManager.playerNames[0] + " " + DataManager.playerScores[0];
+                for (int i = 0; i < DataManager.playerNames.Count; i++)
+                {
+
+                    //if (DataManager.playerNames[0] != null)
+                    if(i == 0) 
+                    {
+                        highScoreOne.text = "#1: " + DataManager.playerNames[0] + " : " + DataManager.playerScores[0];
+                    }
+                    //if (!string.IsNullOrEmpty(DataManager.playerNames[1]) && DataManager.playerNames[1] != null)
+                    if(i == 1)
+                    {
+                        highScoreTwo.text = "#2: " + DataManager.playerNames[1] + " : " + DataManager.playerScores[1];
+                    }
+                    //if (DataManager.playerNames[2] != null)
+                    if(i == 2)
+                    {
+                        highScoreThree.text = "#3: " + DataManager.playerNames[2] + " : " + DataManager.playerScores[2];
+                    }
+                }
             }
-            if (DataManager.playerNames[1] != null)
+            else
             {
-                highScoreTwo.text = "#2 " + DataManager.playerNames[1] + " " + DataManager.playerScores[1];
+                highScoreOne.text = "#1:";
+                highScoreTwo.text = "#2:";
+                highScoreThree.text = "#3:";
             }
-            if (DataManager.playerNames[2] != null)
-            {
-                highScoreThree.text = "#3 " + DataManager.playerNames[2] + " " + DataManager.playerScores[2];
-            }
+        }
+        else
+        {
+            highScoreOne.text = "#1:";
+            highScoreTwo.text = "#2:";
+            highScoreThree.text = "#3:";
         }
     }
 
@@ -46,7 +73,6 @@ public class GameManager : MonoBehaviour
     {
         if (nameInput.text != "")
         {
-            Debug.Log("Input text is " + nameInput.text);
             DataManager.currentPlayerName = nameInput.text;
             SceneManager.LoadScene("main");
         }
@@ -60,5 +86,10 @@ public class GameManager : MonoBehaviour
 #else
             Application.Quit;
 #endif
+    }
+
+    public void Settings()
+    {
+        SceneManager.LoadScene("settings");
     }
 }

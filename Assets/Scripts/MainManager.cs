@@ -20,30 +20,21 @@ public class MainManager : MonoBehaviour
     public TextMeshProUGUI menuButton;
     public TextMeshProUGUI quitButton;
     public GameObject GameOverText;
-    
+
     private bool m_Started = false;
     private int m_Points;
-    
+
     private bool m_GameOver = false;
 
-    
+
     // Start is called before the first frame update
     void Start()
     {
-        string highScorePlayer = "";
-        int highScore = 0;
-         if (DataManager.playerNames[0] != null)
-            {
-                highScorePlayer = DataManager.playerNames[0];
-                highScore = DataManager.playerScores[0];
-            }
-            
         DataManager.instance.Load();
-        NameText.text = "Highest Score: " + highScorePlayer + " : " + highScore;
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
-        
-        int[] pointCountArray = new [] {1,1,2,2,5,5};
+
+        int[] pointCountArray = new[] { 1, 1, 2, 2, 5, 5 };
         for (int i = 0; i < LineCount; ++i)
         {
             for (int x = 0; x < perLine; ++x)
@@ -54,6 +45,8 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
+
+        SetScores();
     }
 
     private void Update()
@@ -68,7 +61,8 @@ public class MainManager : MonoBehaviour
                 forceDir.Normalize();
 
                 Ball.transform.SetParent(null);
-                Ball.AddForce(forceDir * 2.0f, ForceMode.VelocityChange);
+                Ball.AddForce(forceDir * DataManager.gameDifficulty, ForceMode.VelocityChange);
+                Debug.Log("in MainManager Update game difficulty is " + DataManager.gameDifficulty);
             }
         }
         else if (m_GameOver)
@@ -91,21 +85,46 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
-        Debug.Log("hit game over function");
         DataManager.instance.Save();
     }
 
-    public void Menu() {
+    public void Menu()
+    {
         SceneManager.LoadScene("menu");
     }
 
-    public void Quit() {
+    public void Quit()
+    {
         DataManager.instance.Save();
-        #if UNITY_EDITOR
-            EditorApplication.ExitPlaymode();
-        #else
+#if UNITY_EDITOR
+        EditorApplication.ExitPlaymode();
+#else
             Application.Quit;
-        #endif
+#endif
+    }
+
+    void SetScores()
+    {
+        if (DataManager.gameDifficulty == 0)
+        {
+            DataManager.gameDifficulty = 2.0f;      // set default difficulty if none has been set
+        }
+        string highScorePlayer = "";
+        int highScore = 0;
+        if (DataManager.playerNames != null)
+        {
+        //    if (DataManager.playerNames.Count > 0)
+          //  {
+                if (DataManager.playerNames[0] != null)
+                {
+                    highScorePlayer = DataManager.playerNames[0];
+                    highScore = DataManager.playerScores[0];
+                }
+        //    }
+        }
+
+
+        NameText.text = "Highest Score: " + highScorePlayer + " : " + highScore;
     }
 
 }

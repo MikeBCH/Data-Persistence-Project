@@ -18,6 +18,7 @@ public class DataManager : MonoBehaviour
     public static List<string> playerNames;
     public static List<int> playerScores;
     public static List<int> rank;
+    public static float gameDifficulty;
 
     public static bool dataLoaded = false;
 
@@ -37,6 +38,9 @@ public class DataManager : MonoBehaviour
 
         instance = new DataManager();
         DontDestroyOnLoad(gameObject);
+           //         playerNames = new List<string>();
+        //    playerScores = new List<int>();
+        //    rank = new List<int>();
     }
 
     [System.Serializable]
@@ -49,6 +53,7 @@ public class DataManager : MonoBehaviour
 
     public void Save()
     {
+        Debug.Log("in save");
         int newRank = -1;
         if (playerNames == null)
         {       //should only be the case if there are no high scores
@@ -64,9 +69,9 @@ public class DataManager : MonoBehaviour
             newRank = 0;        //if we need to initialise it means there are no scores
         }
 
-        Debug.Log("playerscores != null");
         for (int i = playerScores.Count - 1; i >= 0; i--)
         {
+            Debug.Log("In save, should see this is there is something in playerscores");
             //     foreach (int score in playerScores)  {
             if (currentScore > playerScores[i])
             {
@@ -84,6 +89,7 @@ public class DataManager : MonoBehaviour
         // if a new rank is more than -1, its default value, then there must be a score to add
         if (newRank > -1)
         {
+            Debug.Log("In save should see this is rank is over -1");
             playerNames.Insert(newRank, DataManager.currentPlayerName);
             playerScores.Insert(newRank, currentScore);
             rank.Insert(newRank, newRank);
@@ -117,19 +123,24 @@ public class DataManager : MonoBehaviour
                 // }     
             }
             string json = JsonUtility.ToJson(scores);
-            Debug.Log("From save the file to be written looks like " + json);
             File.WriteAllText(Application.persistentDataPath + "/saveFile1.json", json);
+            Debug.Log("In save and there is the json to write: " + json);
+        }
+        else {
+            Debug.Log("In save, new rank is still -1");
         }
     }
 
     public void Load()
     {
+        Debug.Log("In Load");
         string path = Application.persistentDataPath + "/saveFile1.json";
         if (File.Exists(path))
         {
-            Debug.Log("File exists");
+            Debug.Log("in load, file exists");
             string json = File.ReadAllText(path);
             PlayerScore scores = JsonUtility.FromJson<PlayerScore>(json);
+            Debug.Log("In Load the scores.players is: " + scores.players);
             playerNames = new List<string>();
             playerScores = new List<int>();
             rank = new List<int>();
@@ -146,11 +157,12 @@ public class DataManager : MonoBehaviour
                 }
             }
 
-            Debug.Log("from load the files found looks like " + scores);
             // playerNameHighScore = data.playerName;
             //  highScore = data.playerScore;
-            Debug.Log("File loaded, name is: " + playerNameHighScore + " score is: " + highScore);
             dataLoaded = true;
+        }
+        else {      // ensure all three are initialised even if nothing is loaded
+        Debug.Log("In load, file does not exist");
         }
     }
 
@@ -163,6 +175,10 @@ public class DataManager : MonoBehaviour
         //   string json = JsonUtility.ToJson(save);
           //File.WriteAllText(Application.persistentDataPath + "/saveFile.json", json);
           File.Delete(Application.persistentDataPath + "/saveFile1.json");
+    }
+
+    public void SetDifficulty(float difficulty) {
+        gameDifficulty = difficulty;
     }
 
 }
