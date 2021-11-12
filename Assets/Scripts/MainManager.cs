@@ -62,7 +62,6 @@ public class MainManager : MonoBehaviour
 
                 Ball.transform.SetParent(null);
                 Ball.AddForce(forceDir * DataManager.gameDifficulty, ForceMode.VelocityChange);
-                Debug.Log("in MainManager Update game difficulty is " + DataManager.gameDifficulty);
             }
         }
         else if (m_GameOver)
@@ -99,7 +98,7 @@ public class MainManager : MonoBehaviour
 #if UNITY_EDITOR
         EditorApplication.ExitPlaymode();
 #else
-            Application.Quit;
+            Application.Quit();
 #endif
     }
 

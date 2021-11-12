@@ -34,7 +34,7 @@ public class GameManager : MonoBehaviour
         {
             if (DataManager.playerNames != null)
             {
-                for (int i = 0; i < DataManager.playerNames.Count; i++)
+                for (int i = 0; i < DataManager.playerNames.Count; i++)     //not the best way to implement but having outofbounds issues with the old null checking
                 {
 
                     //if (DataManager.playerNames[0] != null)
@@ -54,7 +54,7 @@ public class GameManager : MonoBehaviour
                     }
                 }
             }
-            else
+            else        //redundant, can be cleaned up alter
             {
                 highScoreOne.text = "#1:";
                 highScoreTwo.text = "#2:";
@@ -84,7 +84,8 @@ public class GameManager : MonoBehaviour
 #if UNITY_EDITOR
         EditorApplication.ExitPlaymode();
 #else
-            Application.Quit;
+            //Application.Quit;
+            Application.Quit();
 #endif
     }
 
